@@ -1,27 +1,16 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
-	"time"
+	"github.com/kintar/aoc2022/util"
 )
 
 func main() {
-	f, err := os.Open("input")
-	if err != nil {
-		panic(err)
-	}
-	defer func() { _ = f.Close() }()
-	reader := bufio.NewReader(f)
-	start := time.Now()
-
-	var line []byte
 	sum := 0
 	badgeSum := 0
 	badgeLine := 0
 	badgeData := [3][]byte{}
-	for line, _, err = reader.ReadLine(); err == nil; line, _, err = reader.ReadLine() {
+	util.RangeOverInputFile(func(line []byte) {
 		common := priorityOf(findAllCommon(findHalves(line)))
 		badgeData[badgeLine] = line
 		badgeLine++
@@ -30,10 +19,8 @@ func main() {
 			badgeLine = 0
 		}
 		sum += int(common)
-	}
+	})
 
-	end := time.Now()
-	fmt.Printf("\nDone in %.3fus\n", float64(end.Sub(start).Nanoseconds())/1000.0)
 	fmt.Println("\nSum of priorities is", sum)
 	fmt.Println("Sum of badges is", badgeSum)
 }
